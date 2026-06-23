@@ -6,8 +6,16 @@
 //
 
 
-enum Gender: String, CaseIterable {
+enum Gender: String, CaseIterable, Identifiable {
+    case male
+    case female
 
-    case male = "Male"
-    case female = "Female"
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .male:   return "Male"
+        case .female: return "Female"
+        }
+    }
 }

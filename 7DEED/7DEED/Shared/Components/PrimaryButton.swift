@@ -6,13 +6,16 @@
 //
 
 
+
+
 import SwiftUI
 
 struct PrimaryButton: View {
-    
+
     let title: String
+    var isEnabled: Bool = true          // defaults true → existing call sites still compile
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(title)
@@ -20,20 +23,12 @@ struct PrimaryButton: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
-                .background(
-                    LinearGradient(
-                        colors: [
-                            Color(hex: "#7C3AED"),
-                            Color(hex: "#A855F7")
-                        ],
-                        startPoint: .bottom,
-                        endPoint: .top
-                    )
-                )
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 18)
-                )
+                .background(AppGradients.primaryButton)
+                .clipShape(RoundedRectangle(cornerRadius: 18))
         }
+        .buttonStyle(.plain)
+        .disabled(!isEnabled)
+        .opacity(isEnabled ? 1.0 : 0.45)
+        .animation(.easeInOut(duration: 0.15), value: isEnabled)
     }
 }
-

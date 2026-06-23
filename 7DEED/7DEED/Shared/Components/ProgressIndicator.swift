@@ -5,6 +5,7 @@
 //  Created by Mohammad Jarrar on 21/06/2026.
 //
 
+//  ProgressIndicator.swift — 7DEED
 
 import SwiftUI
 
@@ -15,17 +16,11 @@ struct ProgressIndicator: View {
 
     var body: some View {
         HStack(spacing: 12) {
-
             ForEach(0..<totalSteps, id: \.self) { index in
-
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(
-                        index < currentStep
-                        ? AppColors.primary
-                        : Color.white.opacity(0.35)
-                    )
-                    .frame(width:70,height: 8)
-                    
+                    .fill(index < currentStep ? AppColors.primary : Color.white.opacity(0.35))
+                    .frame(height: 8)
+                    .frame(maxWidth: .infinity)   // ← fills evenly for any step count
             }
         }
     }

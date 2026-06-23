@@ -1,108 +1,47 @@
-//
-//  GenderSelectionView.swift
-//  7DEED
-//
-//  Created by Mohammad Jarrar on 21/06/2026.
-//
-
+//  GenderSelectionView.swift — 7DEED
 
 import SwiftUI
 
 struct GenderSelectionView: View {
 
-    @StateObject private var viewModel = OnboardingViewModel()
+    @ObservedObject var viewModel: OnboardingViewModel
 
     var body: some View {
-
-        ZStack {
-
-            AppColors.background
-                .ignoresSafeArea()
-
-            VStack(spacing: 0) {
-
-                ProgressIndicator(
-                    currentStep: 1,
-                    totalSteps: 4
-                )
-                .padding(.top, 20)
-
-                titleSection
-
-                athleteSection
-
-                genderSection
-                .padding(.top, 20)
-
-                nextButton
-                    .padding(.top, 40)
-            }
-            .padding(.horizontal, 24)
+        OnboardingScaffold(
+            progressStep: viewModel.currentStep.stepNumber,   // ← from the VM, not hardcoded
+            totalSteps: OnboardingStep.totalSteps,
+            showsBackButton: viewModel.canGoBack,
+            isNextEnabled: viewModel.canProceed,
+            imageName: "woman1",
+            imageScale: 1.0,                          // tune in canvas
+            imageOffset: CGSize(width: 34, height: 34), // ← put your old nudge here
+            onBack: viewModel.goBack,
+            onNext: viewModel.goNext
+        ) {
+            genderSection
         }
     }
-}
 
-private extension GenderSelectionView {
-
-    var titleSection: some View {
-
-        VStack(spacing: 8) {
-
-            Text("Tell us about you")
-                .font(.system(size: 32, weight: .bold))
-                .foregroundStyle(.white)
-
-            Text("help us personalize your plan")
-                .font(.system(size: 16))
-                .foregroundStyle(AppColors.textSecondary)
-        }
-        .padding(.top, 12)
-    }
-
-    var athleteSection: some View {
-        Image("woman1")
-               .resizable()
-               .scaledToFit()
-               .frame(maxWidth: .infinity)
-               .frame(height: 370)
-               .padding(.top, 20)
-               .offset()
-    }
-    var genderSection: some View {
-
-        VStack(alignment: .leading, spacing: 16) {
-
+    private var genderSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
             Text("Your gender")
                 .font(.system(size: 34, weight: .bold))
                 .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            SelectionButton(
-                title: "Male",
-                isSelected: viewModel.selectedGender == .male
-            ) {
-                viewModel.selectedGender = .male
-            }
-
-            SelectionButton(
-                title: "Female",
-                isSelected: viewModel.selectedGender == .female
-            ) {
-                viewModel.selectedGender = .female
+            ForEach(Gender.allCases) { gender in
+                SelectionButton(
+                    title: gender.displayName,
+                    isSelected: viewModel.data.gender == gender
+                ) {
+                    viewModel.data.gender = gender
+                }
             }
         }
-    }
-
-    var nextButton: some View {
-
-        PrimaryButton(
-            title: "Next"
-        ) {
-
-        }
-        .padding(.bottom, 0)
+        .padding(.top, AppSpacing.md)
     }
 }
 
 #Preview {
-    GenderSelectionView()
+    GenderSelectionView(viewModel: OnboardingViewModel(startingAt: .gender))
 }
