@@ -11,7 +11,8 @@ enum OnboardingStep: Int, CaseIterable {
     case birthday
     case measurements
     case goal
+    case target          // conditional: only Lose Fat / Gain Muscle
 
     var stepNumber: Int { rawValue + 1 }
-    static var totalSteps: Int { allCases.count }
+    static var totalSteps: Int { allCases.count }   // kept for compatibility; prefer viewModel.totalSteps
 }

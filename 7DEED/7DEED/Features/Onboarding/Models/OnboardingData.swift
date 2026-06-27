@@ -5,7 +5,6 @@
 //  Created by Mohammad Jarrar on 21/06/2026.
 //
 
-
 import Foundation
 
 struct OnboardingData {
@@ -13,11 +12,17 @@ struct OnboardingData {
     var dateOfBirth: Date?
     var heightCm: Double?
     var weightKg: Double?
-    var activityLevel: ActivityLevel = .sedentary   // matches the design's default
-    // var goal: FitnessGoal?   // added when we build the Goal screen
+    var activityLevel: ActivityLevel = .sedentary
+    var goal: FitnessGoal?
+
+    // Target-step view state (presentational only — no TDEE/deficit math here).
+    var targetWeightKg: Double?
+    var weeklyRate: Double?          // selected kg/wk option
 
     var age: Int? {
         guard let dob = dateOfBirth else { return nil }
         return Calendar.current.dateComponents([.year], from: dob, to: .now).year
     }
 }
+
+

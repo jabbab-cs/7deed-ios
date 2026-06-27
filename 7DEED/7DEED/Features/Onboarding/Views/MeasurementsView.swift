@@ -1,12 +1,6 @@
 //
-//  MeasurementsView.swift
-//  7DEED
-//
-//  Created by Mohammad Jarrar on 22/06/2026.
-//
-
-
 //  MeasurementsView.swift — 7DEED
+//
 
 import SwiftUI
 
@@ -23,13 +17,13 @@ struct MeasurementsView: View {
     var body: some View {
         OnboardingScaffold(
             progressStep: viewModel.currentStep.stepNumber,
-            totalSteps: OnboardingStep.totalSteps,
+            totalSteps: viewModel.totalSteps,
             showsBackButton: viewModel.canGoBack,
             isNextEnabled: viewModel.canProceed,
-            imageName: "man2",            // ⚠️ replace with YOUR actual asset name
-            imageScale: 1.2,              // tune in canvas
+            imageName: "man2",            // ⚠️ replace with your actual asset name
+            imageScale: 1.2,
             imageOffset: CGSize(width: 0, height: 15),
-            imagePosition: .bottom,       // image sits below the inputs
+            imagePosition: .bottom,
             onBack: viewModel.goBack,
             onNext: viewModel.goNext
         ) {
@@ -63,7 +57,19 @@ struct MeasurementsView: View {
 
             sectionTitle("Activity Level")
 
-            LabeledPickerField(label: "Activity Level", selection: $viewModel.data.activityLevel)
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                LabeledPickerField(label: "Activity Level", selection: $viewModel.data.activityLevel)
+
+                Text(viewModel.data.activityLevel.description)
+                    .font(.system(size: 13))
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, AppSpacing.xs)
+                    .id(viewModel.data.activityLevel)            // re-identity → clean fade on change
+                    .transition(.opacity)
+                    .animation(.easeInOut(duration: 0.2), value: viewModel.data.activityLevel)
+            }
         }
         .padding(.top, AppSpacing.md)
     }

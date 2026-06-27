@@ -6,8 +6,6 @@
 //
 
 
-
-
 import Foundation
 import Combine
 
@@ -20,28 +18,40 @@ final class OnboardingViewModel: ObservableObject {
         self.currentStep = step
     }
 
-    var canGoBack: Bool { currentStep != OnboardingStep.allCases.first }
+    /// The active ordered flow. Maintain (or no goal yet) ends at .goal;
+    /// Lose Fat / Gain Muscle append the .target step.
+    var path: [OnboardingStep] {
+        switch data.goal {
+        case .loseFat, .gainMuscle:
+            return [.gender, .birthday, .measurements, .goal, .target]
+        case .maintainWeight, .none:
+            return [.gender, .birthday, .measurements, .goal]
+        }
+    }
+
+    var totalSteps: Int { path.count }
+    var canGoBack: Bool { currentStep != path.first }
 
     var canProceed: Bool {
         switch currentStep {
         case .gender:       return data.gender != nil
         case .birthday:     return data.dateOfBirth != nil
         case .measurements: return data.heightCm != nil && data.weightKg != nil
-        case .goal:         return true   // TODO: gate on goal selection once built
+        case .goal:         return data.goal != nil
+        case .target:       return data.targetWeightKg != nil && data.weeklyRate != nil
         }
     }
 
     func goNext() {
-        guard canProceed else { return }
-        guard let next = OnboardingStep(rawValue: currentStep.rawValue + 1) else {
-            finishOnboarding(); return
-        }
-        currentStep = next
+        guard canProceed, let idx = path.firstIndex(of: currentStep) else { return }
+        let next = idx + 1
+        guard next < path.count else { finishOnboarding(); return }
+        currentStep = path[next]
     }
 
     func goBack() {
-        guard let previous = OnboardingStep(rawValue: currentStep.rawValue - 1) else { return }
-        currentStep = previous
+        guard let idx = path.firstIndex(of: currentStep), idx > 0 else { return }
+        currentStep = path[idx - 1]
     }
 
     private func finishOnboarding() {

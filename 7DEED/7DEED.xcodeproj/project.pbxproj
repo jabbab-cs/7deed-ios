@@ -29,22 +29,9 @@
 		F6B2DB9A2FE7C15000B8B61C /* 7DEEDUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = 7DEEDUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F6B2DBEA2FE7CDFE00B8B61C /* Exceptions for "7DEED" folder in "7DEED" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"-DEED-Info.plist",
-			);
-			target = F6B2DB822FE7C14E00B8B61C /* 7DEED */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F6B2DB852FE7C14E00B8B61C /* 7DEED */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F6B2DBEA2FE7CDFE00B8B61C /* Exceptions for "7DEED" folder in "7DEED" target */,
-			);
 			path = 7DEED;
 			sourceTree = "<group>";
 		};

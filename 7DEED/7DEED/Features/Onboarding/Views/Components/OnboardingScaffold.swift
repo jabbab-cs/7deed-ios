@@ -1,15 +1,3 @@
-//
-//  OnboardingScaffold.swift
-//  7DEED
-//
-//  Created by Mohammad Jarrar on 21/06/2026.
-//
-
-
-//  OnboardingScaffold.swift — 7DEED
-
-//  OnboardingScaffold.swift — 7DEED
-
 //  OnboardingScaffold.swift — 7DEED
 
 import SwiftUI
@@ -23,10 +11,14 @@ struct OnboardingScaffold<Content: View>: View {
     let showsBackButton: Bool
     let isNextEnabled: Bool
 
+    var title: String = "Tell us about you"
+    var subtitle: String = "Help us personalize your plan"
+    var nextButtonTitle: String = "Next"
+
     let imageName: String
     var imageScale: CGFloat = 1
     var imageOffset: CGSize = .zero
-    var imagePosition: OnboardingImagePosition = .top   // NEW (defaults keep old screens intact)
+    var imagePosition: OnboardingImagePosition = .top
 
     let onBack: () -> Void
     let onNext: () -> Void
@@ -37,10 +29,14 @@ struct OnboardingScaffold<Content: View>: View {
             AppColors.background.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                ProgressIndicator(currentStep: progressStep, totalSteps: totalSteps)
-                    .padding(.top, AppSpacing.md)
-
-                header
+                OnboardingHeader(
+                    progressStep: progressStep,
+                    totalSteps: totalSteps,
+                    title: title,
+                    subtitle: subtitle,
+                    showsBackButton: showsBackButton,
+                    onBack: onBack
+                )
 
                 if imagePosition == .top {
                     heroImage
@@ -50,7 +46,7 @@ struct OnboardingScaffold<Content: View>: View {
                     heroImage
                 }
 
-                PrimaryButton(title: "Next", isEnabled: isNextEnabled, action: onNext)
+                PrimaryButton(title: nextButtonTitle, isEnabled: isNextEnabled, action: onNext)
                     .padding(.top, AppSpacing.lg)
                     .padding(.bottom, AppSpacing.sm)
             }
@@ -65,31 +61,5 @@ struct OnboardingScaffold<Content: View>: View {
             .scaleEffect(imageScale)
             .offset(imageOffset)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    private var header: some View {
-        VStack(spacing: AppSpacing.sm) {
-            ZStack {
-                Text("Tell us about you")
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                if showsBackButton {
-                    HStack {
-                        Button(action: onBack) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundStyle(AppColors.primary)
-                        }
-                        .buttonStyle(.plain)
-                        Spacer()
-                    }
-                }
-            }
-            Text("Help us personalize your plan")
-                .font(.system(size: 16))
-                .foregroundStyle(AppColors.textSecondary)
-        }
-        .padding(.top, AppSpacing.md)
     }
 }
