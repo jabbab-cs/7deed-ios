@@ -1,5 +1,7 @@
 //
 //  MeasurementsView.swift — 7DEED
+//  Rebuilt on the TargetView pattern: pinned header → scroll → pinned button,
+//  no hero. Gives the Activity Level dropdown room to expand without clipping.
 //
 
 import SwiftUI
@@ -15,20 +17,46 @@ struct MeasurementsView: View {
     private enum Field { case height, weight }
 
     var body: some View {
-        OnboardingScaffold(
-            progressStep: viewModel.currentStep.stepNumber,
-            totalSteps: viewModel.totalSteps,
-            showsBackButton: viewModel.canGoBack,
-            isNextEnabled: viewModel.canProceed,
-            imageName: "man2",            // ⚠️ replace with your actual asset name
-            imageScale: 1.2,
-            imageOffset: CGSize(width: 0, height: 15),
-            imagePosition: .bottom,
-            onBack: viewModel.goBack,
-            onNext: viewModel.goNext
-        ) {
-            content
+        VStack(spacing: 0) {
+            OnboardingHeader(
+                progressStep: viewModel.currentStep.stepNumber,
+                totalSteps: viewModel.totalSteps,
+                title: "Tell us about you",
+                subtitle: "Help us personalize your plan",
+                showsBackButton: viewModel.canGoBack,
+                onBack: viewModel.goBack
+            )
+
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.lg) {
+                    sectionTitle("Measurements")
+
+                    VStack(spacing: AppSpacing.md) {
+                        LabeledTextField(label: "Height", placeholder: "Input", unit: "CM", text: $heightText)
+                            .focused($focusedField, equals: .height)
+                        LabeledTextField(label: "Weight", placeholder: "Input", unit: "KG", text: $weightText)
+                            .focused($focusedField, equals: .weight)
+                    }
+
+                    sectionTitle("Activity Level")
+
+                    DescriptivePickerField(
+                        label: "Activity Level",
+                        selection: $viewModel.data.activityLevel
+                    )
+                }
+                .padding(.top, AppSpacing.md)
+                .padding(.bottom, AppSpacing.md)
+            }
+
+            PrimaryButton(title: "Next",
+                          isEnabled: viewModel.canProceed,
+                          action: viewModel.goNext)
+                .padding(.top, AppSpacing.sm)
+                .padding(.bottom, AppSpacing.sm)
         }
+        .padding(.horizontal, AppSpacing.lg)
+        .background(AppColors.background.ignoresSafeArea())
         .onAppear(perform: seedFromModel)
         .onChange(of: heightText) { newValue in
             viewModel.data.heightCm = parse(newValue)
@@ -42,36 +70,6 @@ struct MeasurementsView: View {
                 Button("Done") { focusedField = nil }
             }
         }
-    }
-
-    private var content: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.lg) {
-            sectionTitle("Measurements")
-
-            VStack(spacing: AppSpacing.md) {
-                LabeledTextField(label: "Height", placeholder: "Input", unit: "CM", text: $heightText)
-                    .focused($focusedField, equals: .height)
-                LabeledTextField(label: "Weight", placeholder: "Input", unit: "KG", text: $weightText)
-                    .focused($focusedField, equals: .weight)
-            }
-
-            sectionTitle("Activity Level")
-
-            VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                LabeledPickerField(label: "Activity Level", selection: $viewModel.data.activityLevel)
-
-                Text(viewModel.data.activityLevel.description)
-                    .font(.system(size: 13))
-                    .foregroundStyle(AppColors.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, AppSpacing.xs)
-                    .id(viewModel.data.activityLevel)            // re-identity → clean fade on change
-                    .transition(.opacity)
-                    .animation(.easeInOut(duration: 0.2), value: viewModel.data.activityLevel)
-            }
-        }
-        .padding(.top, AppSpacing.md)
     }
 
     private func sectionTitle(_ text: String) -> some View {

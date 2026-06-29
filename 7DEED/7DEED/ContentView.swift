@@ -5,7 +5,6 @@
 //  Created by Mohammad Jarrar on 21/06/2026.
 //
 
-
 import SwiftUI
 
 struct ContentView: View {
@@ -14,4 +13,6 @@ struct ContentView: View {
     }
 }
 
-#Preview { ContentView() }
+#Preview {
+    ContentView()
+}

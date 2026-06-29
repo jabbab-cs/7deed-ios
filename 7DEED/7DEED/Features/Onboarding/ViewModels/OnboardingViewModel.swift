@@ -1,10 +1,6 @@
 //
-//  OnboardingViewModel.swift
-//  7DEED
+//  OnboardingViewModel.swift — 7DEED
 //
-//  Created by Mohammad Jarrar on 21/06/2026.
-//
-
 
 import Foundation
 import Combine
@@ -13,13 +9,12 @@ final class OnboardingViewModel: ObservableObject {
 
     @Published var data = OnboardingData()
     @Published private(set) var currentStep: OnboardingStep = .gender
+    @Published private(set) var isComplete = false
 
     init(startingAt step: OnboardingStep = .gender) {
         self.currentStep = step
     }
 
-    /// The active ordered flow. Maintain (or no goal yet) ends at .goal;
-    /// Lose Fat / Gain Muscle append the .target step.
     var path: [OnboardingStep] {
         switch data.goal {
         case .loseFat, .gainMuscle:
@@ -54,7 +49,8 @@ final class OnboardingViewModel: ObservableObject {
         currentStep = path[idx - 1]
     }
 
-    private func finishOnboarding() {
-        print("Onboarding complete:", data)
-    }
+    /// Return from the plan screen back into the flow (back chevron on PlanView).
+    func returnToOnboarding() { isComplete = false }
+
+    private func finishOnboarding() { isComplete = true }
 }
